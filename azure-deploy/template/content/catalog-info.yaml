@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name }}
+  description: 'Azure Template in the Envirement: Staging.'
+  annotations:
+    github.com/project-slug: 'anuragpachauri/${{ values.name }}'
+    azure.com/resource-tag: '${{ values.tagkey }}:${{ values.tagvalue }}'
+spec:
+  type: service
+  lifecycle: experimental
+  owner: backstage

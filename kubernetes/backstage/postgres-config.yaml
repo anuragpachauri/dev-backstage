@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-configs
+  namespace: backstage
+data:
+  POSTGRES_HOST: '172.178.87.141'
+  POSTGRES_PORT: '5432'

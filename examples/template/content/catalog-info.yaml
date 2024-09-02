@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name }}
+  description: A simple Node.js service example
+  annotations:
+    github.com/project-slug: 'anuragpachauri/${{ values.name }}'
+    backstage.io/kubernetes-id: 'kind-backstage'
+    argocd/app-name: 'test-app'
+    jira.com/project-key: 'BL'
+    statuspage.io/components: instance:c9fq2sv62c73
+spec:
+  type: service
+  lifecycle: experimental
+  owner: backstage

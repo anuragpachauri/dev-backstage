@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backstage-github
+  namespace: backstage
+type: Opaque
+data:
+  GITHUB_CLIENT_ID: T3YyM2xpZ09scEdFYllibjJ1UGs=
+  GITHUB_CLIENT_SECRET: M2FkNTY4NzdmMjFkM2FhYjI0ZTMyMzNjZTliMmZhZTAxMjEzNTQxZg==
+  AZURE_CLIENT_ID: ZTQxYzdjOGUtYjIxNS00Y2YxLWI5YmMtMmY2NzEyZjc3NGQ5
+  AZURE_CLIENT_SECRET: SHR0OFF+WnltdzZ+c3JWWGQ5UjBDS1pHalQxZjRPZmpJUG50ZmNIMg==
+  AZURE_TENANTID_ID: YWZmMzU4YzItMTNmYS00ODQ5LWFjNjAtOWYzMjczODMzY2Iz

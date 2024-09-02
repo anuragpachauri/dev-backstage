@@ -1,0 +1,2 @@
+roleName,permissionName,users
+scaffolder-read-role,scaffolder.template.step.read,user:default/anurag.pachauri_infracloud.io

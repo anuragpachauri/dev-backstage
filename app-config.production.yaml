@@ -1,0 +1,189 @@
+app:
+  # Should be the same as backend.baseUrl when using the `app-backend` plugin.
+  baseUrl: https://dev.anurag.today
+
+statuspage:
+  - name: mystatuspageinstance
+    pageid: kwrynt7h8qvk
+    token: 
+      $env: STATUSPAGE_TOKEN
+    link: https://backstage1.statuspage.io
+
+    
+permission:
+  enabled: true
+  rbac:
+    pluginsWithPermission:
+      - catalog
+      - scaffolder
+      - permission
+    admin:
+      users:
+        - name: user:default/anuragpachauri 
+        - name: user:default/anurag.pachauri_infracloud.io
+      groups:
+        - name: Group:default/backstage
+
+backend:
+  infraWallet:
+    integrations:
+      azure:
+        - name: infracloud
+          subscriptionId: 
+            $env: AZURE_SUBSCRIPTIONId
+          tenantId: 
+            $env: AZURE_TENANTID_ID 
+          clientId: 
+            $env: AZURE_CLIENT_ID
+          clientSecret: 
+            $env: AZURE_CLIENT_SECRET
+
+  baseUrl: https://dev.anurag.today
+  listen:
+    port: 
+      $env: APP_CONFIG_backend_listen_port
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+    img-src: ["*", "data:"]
+    frame-src:
+      - 'https://us5.datadoghq.com'
+      - 'https://p.us5.datadoghq.com/sb/85cfa16b-6394-11ef-b68e-a2c6e293d47f-cc6a1c68f238e7e554194ebfcc44ec54'
+      - 'https://*.datadoghq.com'
+  cors:
+  origin: ['http://dev.anurag.today', 'https://dev.anurag.today']
+
+  # config options: https://node-postgres.com/apis/client
+
+database:
+    client: pg
+    connection:
+      host: 
+        $env: POSTGRES_HOST
+      port: 
+        $env: POSTGRES_PORT
+      user: 
+        $env: POSTGRES_USER
+      password: 
+        $env: POSTGRES_PASSWORD
+      knexConfig:
+      pool:
+        min: 3
+        max: 12
+        acquireTimeoutMillis: 60000
+        idleTimeoutMillis: 60000
+
+integrations:
+  github:
+    - host: github.com
+      token:
+        $env: GITHUB_TOKEN
+
+proxy:
+
+  '/argocd/api':
+    target: https://argocd-server.argocd.svc.cluster.local/api/v1/
+    changeOrigin: true
+    secure: false
+    headers:
+      Authorization: 
+        $env: ARGOCD_TOKEN
+
+
+auth:
+  environment: production
+  providers:
+    github:
+      production:
+        clientId: 
+          $env: GITHUB_CLIENT_ID
+        clientSecret: 
+          $env: GITHUB_CLIENT_SECRET
+        signIn:
+          resolvers:
+            - resolver: emailMatchingUserEntityProfileEmail
+
+    microsoft:
+      production:
+        clientId: 
+          $env: AZURE_CLIENT_ID
+        clientSecret: 
+          $env: AZURE_CLIENT_SECRET
+        tenantId: 
+          $env: AZURE_TENANTID_ID
+        signIn:
+          resolvers:
+            - resolver: emailMatchingUserEntityProfileEmail
+
+catalog:
+  providers:
+    microsoftGraphOrg:
+      default:
+        clientId: ${AZURE_CLIENT_ID}
+        clientSecret: ${AZURE_CLIENT_SECRET}
+        tenantId: ${AZURE_TENANTID_ID}
+        user:
+          filter: accountEnabled eq true and userType eq 'member'
+        group:
+          filter: >
+            securityEnabled eq true
+            and mailEnabled eq false
+        schedule:
+          frequency: PT1H
+          timeout: PT50M
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  rules:
+    - allow: [Component, System, API, Resource, Location]
+  locations:
+    - type: file
+      target: ./examples/entities.yaml
+
+    # Local example template
+    - type: file
+      target: ./examples/template/template.yaml
+      rules:
+        - allow: [Template]
+    - type: file
+      target: ./azure-deploy/template/template.yaml
+      rules:
+        - allow: [Template]
+
+    # Local example organizational data
+    - type: file
+      target: ./examples/org.yaml
+      rules:
+        - allow: [User, Group]
+jiraDashboard:
+  token: 
+    $env: JIRATOKEN
+  baseUrl: https://anuragpachauri.atlassian.net/rest/api/2/
+
+
+
+
+# custom plugins
+
+jira:
+  token: 
+    $env: JIRATOKEN
+  baseUrl: https://anuragpachauri.atlassian.net/rest/api/2/
+  projectKey: BL
+  username: anuragpachauri8
+
+
+
+azure:
+  subscriptionId: 
+    $env: AZURE_SUBSCRIPTIONId
+  tenantId: 
+    $env: AZURE_TENANTID_ID
+  clientId: 
+    $env: AZURE_CLIENT_ID
+  clientSecret: 
+    $env: AZURE_CLIENT_SECRET
+
+infraWallet:
+  settings:
+    defaultGroupBy: none 
+    defaultShowLastXMonths: 3   

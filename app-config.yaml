@@ -1,0 +1,195 @@
+app:
+  title: Anurag Backstage App
+  baseUrl: http://localhost:3000
+
+organization:
+  name: infracloud
+
+statuspage:
+  - name: mystatuspageinstance
+    pageid: kwrynt7h8qvk
+    token: ${STATUSPAGE_TOKEN}
+    link: https://backstage1.statuspage.io
+
+
+
+permission:
+  enabled: true
+  rbac:
+    pluginsWithPermission:
+      - catalog
+      - scaffolder
+      - permission
+    admin:
+      users:
+        - name: user:default/anuragpachauri
+        - name: user:default/anurag.pachauri_infracloud.io
+ 
+   
+
+backend:
+  infraWallet:
+    integrations:
+      azure:
+        - name: infracloud
+          subscriptionId: ${AZURE_SUBSCRIPTIONId}
+          tenantId: ${AZURE_TENANTID_ID}
+          clientId: ${AZURE_CLIENT_ID}
+          clientSecret: ${AZURE_CLIENT_SECRET}
+
+
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+    img-src: ["*", "data:"]
+    frame-src:
+      - 'https://us5.datadoghq.com'
+      - 'https://p.us5.datadoghq.com/sb/85cfa16b-6394-11ef-b68e-a2c6e293d47f-cc6a1c68f238e7e554194ebfcc44ec54'
+      - 'https://*.datadoghq.com'
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  # This is for local development only, it is not recommended to use this in production
+  # The production database configuration is stored in app-config.production.yaml
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+integrations:
+  github:
+    - host: github.com
+      token: ${GITHUB_TOKEN}
+
+
+proxy:
+
+  '/argocd/api':
+    target: https://argocd-server.argocd.svc.cluster.local/api/v1/
+    changeOrigin: true
+    secure: false
+    headers:
+      Authorization: "Bearer ${ARGOCD_TOKEN}"
+
+
+
+techdocs:
+  builder: 'local' # Alternatives - 'external'
+  generator:
+    runIn: 'docker' # Alternatives - 'local'
+  publisher:
+    type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
+
+auth:
+  environment: development
+  providers:
+    github:
+      development:
+        clientId: ${GITHUB_CLIENT_ID}
+        clientSecret: ${GITHUB_CLIENT_SECRET}
+        signIn:
+          resolvers:
+            - resolver: emailMatchingUserEntityProfileEmail
+
+    microsoft:
+      development:
+        clientId: ${AZURE_CLIENT_ID}
+        clientSecret: ${AZURE_CLIENT_SECRET}
+        tenantId: ${AZURE_TENANTID_ID}
+        signIn:
+          resolvers:
+            - resolver: emailMatchingUserEntityProfileEmail
+
+
+
+
+scaffolder:
+  # see https://backstage.io/docs/features/software-templates/configuration for software template options
+
+catalog:
+  providers:
+    microsoftGraphOrg:
+      default:
+        clientId: ${AZURE_CLIENT_ID}
+        clientSecret: ${AZURE_CLIENT_SECRET}
+        tenantId: ${AZURE_TENANTID_ID}
+        user:
+          filter: accountEnabled eq true and userType eq 'member'
+        group:
+          filter: >
+            securityEnabled eq true
+            and mailEnabled eq false
+        schedule:
+          frequency: PT1H
+          timeout: PT50M
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  rules:
+    - allow: [Component, System, API, Resource, Location]
+  locations:
+    # Local example data, file locations are relative to the backend process, typically `packages/backend`
+    - type: file
+      target: ../../examples/entities.yaml
+
+    # Local example template
+    - type: file
+      target: ../../examples/template/template.yaml
+      rules:
+        - allow: [Template]
+    - type: file
+      target: ../../azure-deploy/template/template.yaml
+      rules:
+        - allow: [Template]
+
+    # Local example organizational data
+    - type: file
+      target: ../../examples/org.yaml
+      rules:
+        - allow: [User, Group]
+    - type: url
+      target: 'https://github.com/anuragpachauri/test-service/blob/master/catalog-info.yaml'
+
+
+    ## Uncomment these lines to add more example data
+    # - type: url
+    #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml
+
+    ## Uncomment these lines to add an example org
+    # - type: url
+    #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme-corp.yaml
+    #   rules:
+    #     - allow: [User, Group]
+
+
+jiraDashboard:
+  token: Basic ${JIRATOKEN}
+  baseUrl: https://anuragpachauri.atlassian.net/rest/api/2/
+
+    
+
+infraWallet:
+  settings:
+    defaultGroupBy: none 
+    defaultShowLastXMonths: 3  
+
+
+
+
+# custom plugins
+
+jira:
+  token: Basic ${JIRATOKEN}
+  baseUrl: https://anuragpachauri.atlassian.net/rest/api/2/
+  projectKey: BL
+  username: anuragpachauri8
+
+
+
+azure:
+  subscriptionId: ${AZURE_SUBSCRIPTIONId}
+  tenantId: ${AZURE_TENANTID_ID}
+  clientId: ${AZURE_CLIENT_ID}
+  clientSecret: ${AZURE_CLIENT_SECRET}

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backstage
+  namespace: backstage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backstage
+  template:
+    metadata:
+      labels:
+        app: backstage
+    spec:
+      containers:
+        - name: backstage
+          image: backstage:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: backend
+              containerPort: 7007
+            - name: frontend
+              containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: postgres-configs
+            - secretRef:
+                name: postgres-secrets
+            - secretRef:
+                name: backstage-secrets
+            - secretRef:    
+                name: backstage-github
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backstage
+  namespace: backstage
+spec:
+  selector:
+    app: backstage
+  ports:
+    - name: backend
+      port: 7007
+      targetPort: backend
+    - name: frontend
+      port: 3000
+      targetPort: frontend

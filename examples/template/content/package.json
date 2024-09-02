@@ -1,0 +1,16 @@
+{
+  "name": "example-nodejs-service",
+  "version": "1.0.0",
+  "description": "A simple Node.js service example",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm install && mkdir -p dist && cp -r index.js node_modules dist/"
+  },
+  "author": "anuragpachauri",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
