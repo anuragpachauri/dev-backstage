@@ -1,0 +1,46 @@
+name: platformone-Build
+on:
+  push:
+    branches:
+      - "!develop"
+      - "!main"
+    tags: 
+      - '*'
+  pull_request:
+    branches:
+      - main
+      - develop
+  workflow_call:    
+  workflow_dispatch:
+    inputs:
+      repo_commit_id:
+       description: 'Enter the commit SHA you want to build (leave blank for the latest)'
+       required: false
+      IMAGE_NAME:
+        description: 'Enter the docker IMAGE_NAME'
+        required: false
+        default: "anuragpachauri434/backstage"
+
+permissions:
+  contents: read
+
+jobs:
+
+  build-app:
+    uses: ./.github/workflows/Template-aks-build.yml
+    with:
+      RP_COMMIT_ID: ${{ github.event.inputs.repo_commit_id }}
+      Mendscan_folderpath: "."
+      Mendscan_ProductName: "platformonepoc"
+      Mendscan_ProjectName: "platformonepoc"      
+      
+    secrets: inherit
+    
+  build-push-acr-app:
+    needs: build-app
+    if: github.ref_type == 'tag' 
+    uses: ./.github/workflows/Template-aks-acr-push.yml
+    with:
+      IMAGE_NAME: "anuragpachauri434/backstage"
+ 
+    secrets: inherit    

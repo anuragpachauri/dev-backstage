@@ -11,10 +11,10 @@ describe('jiraHomePlugin', () => {
         mockServices.rootConfig.factory({
           data: {
             jira: {
-              projectKey: '<KEY>',
-              username: 'USERNAME',
-              baseUrl: '<Base Url of the App>',
-              token: 'Basic <Token>',
+              projectKey: 'BL',
+              username: 'anuragpachauri8',
+              baseUrl: 'https://anuragpachauri.atlassian.net/rest/api/2/',
+              token: 'Basic YW51cmFncGFjaGF1cmk4QGdtYWlsLmNvbTpBVEFUVDN4RmZHRjAwRURUcU1fNDJudXlWQzB2cGYzNnhwcUhJZHRBRVFKd1dlU2FITXcwRUZLOWJ6X3JtYlhsTVJfUzVWTU9NVW84anN0dU1QaGFNR0VZVjJLZHZ6U2czdUhVZXA2bkljQ2RfSGpaUUxkUlN5ZmR0QzB6NFlad24yUnduT29zUktEdWV4eFVJbHFBaEJfTG5PS28tbnVZUDh6UmFnQVQtMFV5OE9QS3dNazUxWTg9MDVDMjI0MjI=',
             },
           },
         }),

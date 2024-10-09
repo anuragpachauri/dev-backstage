@@ -1,0 +1,54 @@
+name: Template-aks-build
+
+on:
+  workflow_call:
+    inputs:
+      RP_COMMIT_ID:
+        required: true
+        type: string
+      Mendscan_folderpath:
+        required: true
+        type: string
+        default: "."
+      Mendscan_ProductName:
+        required: true
+        type: string
+      Mendscan_ProjectName:
+        required: true
+        type: string
+
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.RP_COMMIT_ID || 'main' }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.13.1
+          cache: "yarn"
+          cache-dependency-path: "yarn.lock"
+
+      - name: Install the packages and  dependencies
+        run: yarn install --frozen-lockfile --ignore-engines
+
+      - name: Build the code
+        run: yarn build:backend
+
+      - name: Build the tsc
+        run: yarn tsc
+
+      - name: test the file
+        run: yarn test
+     
+
+      
